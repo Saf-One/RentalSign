@@ -1,0 +1,7 @@
+{
+  "name": "rentalsign",
+  "framework": "nextjs",
+  "buildCommand": "next build",
+  "devCommand": "next dev",
+  "installCommand": "npm install"
+}
