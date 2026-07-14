@@ -4,7 +4,7 @@ import { prisma } from '../../lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-export async function createListing(formData: FormData) {
+export async function createListing(prevState: any, formData: FormData) {
   const title = formData.get('title') as string
   const description = formData.get('description') as string
   const address = formData.get('address') as string
@@ -13,23 +13,27 @@ export async function createListing(formData: FormData) {
   // Find the first user as a fallback host
   const host = await prisma.user.findFirst()
   if (!host) {
-    throw new Error('No user found to assign as host')
+    return { success: false, error: 'No user found' }
   }
   const hostId = host.id
 
   if (!title || !description || !address || isNaN(pricePerNight)) {
-    throw new Error('All fields are required')
+    return { success: false, error: 'All fields are required' }
   }
 
-  await prisma.listing.create({
-    data: {
-      title,
-      description,
-      address,
-      pricePerNight,
-      hostId,
-    },
-  })
+  try {
+    await prisma.listing.create({
+      data: {
+        title,
+        description,
+        address,
+        pricePerNight,
+        hostId,
+      },
+    })
+  } catch (e) {
+    return { success: false, error: 'Failed to create listing' }
+  }
 
   revalidatePath('/listings')
   redirect('/listings')

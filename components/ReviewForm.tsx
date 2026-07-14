@@ -2,7 +2,7 @@ import { createReview } from '../app/actions/reviews'
 
 export default function ReviewForm({ listingId, userId }: { listingId: string, userId: string }) {
   return (
-    <form action={createReview} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mt-6">
+    <form action={async (formData: FormData) => { await createReview(formData); }} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mt-6">
       <h3 className="text-xl font-semibold mb-4">Leave a review</h3>
       <input type="hidden" name="listingId" value={listingId} />
       <input type="hidden" name="userId" value={userId} />
